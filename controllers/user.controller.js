@@ -3,11 +3,12 @@ import { User } from "../models/models.js"
 
 const postUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body
-        let isAdmin = false;
+        const { username, email, profile, password } = req.body
+        let isAdmin = false,
+            isActive = true;
 
         const newUser = new User({
-            username, email, isAdmin, password
+            username, email, isActive, isAdmin, password, profile
         })
 
         if (username === '' || username === undefined || email === '' || email === undefined) {
