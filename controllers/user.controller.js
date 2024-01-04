@@ -10,26 +10,30 @@ const postUser = async (req, res) => {
         const newUser = new User({
             username, email, isActive, isAdmin, password, profile
         })
-
-        if (username === '' || username === undefined || email === '' || email === undefined) {
-            res.json("Fill in all fields")
+        console.log(req.body)
+        if (username === '') {
+            res.json({message: "Fill in all fields"})
         } else {
             await User.findOne({ email: email })
                 .then(user => {
                     if (user) {
                         res.json({ error: "This email is taken" })
                     } else {
+                        
                         // Crypt the password
-                        bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
-                            if (err) throw err
-                            newUser.password = hash
-                            newUser.save()
+                        bcrypt.genSalt(10, function(err, salt){
+                            if(err) throw err
+                            bcrypt.hash(newUser.password, salt, function(err, hash){
+                                if(err) throw err
+                                newUser.password = hash
+                                newUser.save()
                                 .then(user => {
                                     // console.log("User created " + user);
                                     res.json(user)
                                 })
                                 .catch(error => console.log("Failed to register user " + error))
-                        }))
+                            })
+                        })
                     }
                 })
                 .catch(error => console.log("Error Email " + error))

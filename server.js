@@ -3,7 +3,6 @@ import express from "express"
 import bodyParser from "body-parser";
 import cors from "cors"
 import dotenv from "dotenv"
-import mongoose from "mongoose";
 
 import UserRouter from "./routes/user.routes.js"
 import dbConnection from "./utils/db.config.js";
@@ -12,6 +11,7 @@ dotenv.config({ path: ".env" })
 const PORT = process.env.PORT || 7001
 
 app.use(cors())
+app.set(express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
@@ -28,7 +28,7 @@ const Server = () => {
     dbConnection()
     app.listen(PORT, (error) => {
         if (error) throw error
-        console.log(`Server is running on PORT: ${PORT}`)
+        console.log(`Server is running on PORT: http://localhost:${PORT}`)
     })
 }
 Server()
