@@ -17,6 +17,7 @@ export const upload = multer({ storage: storage });
 
 const postUser = async (req, res) => {
 
+<<<<<<< HEAD
     const { username, email, isAdmin } = req.body,
         password = username
 
@@ -54,6 +55,38 @@ const postUser = async (req, res) => {
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: "Internal Server Error" });
+=======
+        const newUser = new User({
+            username, email, isActive, isAdmin, password, profile
+        })
+        console.log(req.body)
+        if (username === '') {
+            res.json({message: "Fill in all fields"})
+        } else {
+            await User.findOne({ email: email })
+                .then(user => {
+                    if (user) {
+                        res.json({ error: "This email is taken" })
+                    } else {
+                        
+                        // Crypt the password
+                        bcrypt.genSalt(10, function(err, salt){
+                            if(err) throw err
+                            bcrypt.hash(newUser.password, salt, function(err, hash){
+                                if(err) throw err
+                                newUser.password = hash
+                                newUser.save()
+                                .then(user => {
+                                    // console.log("User created " + user);
+                                    res.json(user)
+                                })
+                                .catch(error => console.log("Failed to register user " + error))
+                            })
+                        })
+                    }
+                })
+                .catch(error => console.log("Error Email " + error))
+>>>>>>> 501866e6d42646336f0f545eee53e6af2666aa6c
         }
     }
 }

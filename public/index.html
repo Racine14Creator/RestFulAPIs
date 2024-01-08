@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="myForm" enctype="multipart/form-data" method="post">
+        <div class="group">
+            <label for="username">Username</label>
+            <input type="text" name="username" placeholder="username" class="input">
+        </div>
+        <div class="group">
+            <label for="email">Email</label>
+            <input type="email" name="" id="" placeholder="Email@example.com" class="input">
+        </div>
+        <div class="group">
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="Password" id="" class="input">
+        </div>
+        <div class="group">
+            <label for="profile">Password</label>
+            <input type="file" name="profile" id="profile" class="input">
+        </div>
+        <div class="group">
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+    <div id="result"></div>
+    <script>
+        const myForm = document.getElementById('myForm')
+        const input = document.querySelector('#profile')
+        const url = "http://localhost:7000/users"
+        myForm.addEventListener('submit', function(event){
+            event.preventDefault()
+            const formData = new FormData(myForm)
+            formData.append('profile', input.files[0])
+            fetch(`${url}`, {method: "POST", headers: {"Content-Type": "multiplart/form-data"}, body: formData})
+                .then(res => res.json())
+                .then(data => console.log(data))
+                .catch(error=>console.log(error))
+        })
+    </script>
+</body>
+</html>
