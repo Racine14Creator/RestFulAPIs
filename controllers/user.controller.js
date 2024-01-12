@@ -25,7 +25,6 @@ const postUser = async (req, res) => {
         try {
             const existingUsername = await User.findOne({ username: username });
             const existingEmail = await User.findOne({ email: email });
-
             if (existingUsername) {
                 res.json({ message: "This username is taken" });
             } else if (existingEmail) {
@@ -95,7 +94,18 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const id = req.params.id;
     const data = req.body;
-    console.log(data)
+
+    bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(data.password, salt, async function (err, hash) {
+            let pass = hash
+            data.password = pass
+            await User.findByIdAndUpdate(id, data, { new: true })
+                .then(user => {
+                    res.json(user).status(201)
+                })
+                .catch(err => console.log(err))
+        })
+    })
 }
 
 const deleteUser = async (req, res) => {
