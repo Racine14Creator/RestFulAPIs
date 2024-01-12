@@ -96,12 +96,16 @@ const updateUser = async (req, res) => {
     const data = req.body;
 
     bcrypt.genSalt(10, function (err, salt) {
+        if (err) throw err.message
+
         bcrypt.hash(data.password, salt, async function (err, hash) {
-            let pass = hash
-            data.password = pass
+
+            if (err) throw err.message
+            data.password = hash
+
             await User.findByIdAndUpdate(id, data, { new: true })
                 .then(user => {
-                    res.json(user).status(201)
+                    res.json(user).status(200)
                 })
                 .catch(err => console.log(err))
         })
@@ -109,7 +113,9 @@ const updateUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
+
     let id = req.params.id;
+
     try {
         await User.findByIdAndDelete(id)
             .then(_ => res.json("success"))
