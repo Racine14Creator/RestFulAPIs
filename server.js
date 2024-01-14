@@ -35,7 +35,17 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
 app.get("/", (req, res) => {
-    res.json({ data: "API" });
+    res.json({
+        "data": [
+            { data: "API" },
+            {
+                endpoints: [{
+                    users: "/users",
+                    login: "/login"
+                }]
+            }
+        ]
+    });
 });
 
 app.post('/upload', async (req, res) => {
