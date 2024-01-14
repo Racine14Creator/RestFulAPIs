@@ -1,21 +1,18 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
-// import multer from "multer";
 import cloudinary from "cloudinary";
 import UserRouter from "./routes/user.routes.js";
-import dbConnection from "./utils/db.config.js";
+import mongoose from "mongoose";
+import * as dotenv from "dotenv"
 
 dotenv.config({ path: ".env" });
 
 const PORT = process.env.PORT || 7001;
-const app = express();
+const DB_URL = process.env.MONGO
 
-// Use multer before other middleware that parses the request body
-// import { upload } from "./controllers/user.controller.js";
-// app.use(upload.single('image'));
+const app = express();
 
 app.use(fileUpload({
     useTempFiles: true,
@@ -61,11 +58,16 @@ app.post('/upload', async (req, res) => {
 app.use('/users', UserRouter);
 
 const server = () => {
-    dbConnection();
-    app.listen(PORT, (error) => {
-        if (error) throw error;
-        console.log(`Server is running on PORT: ${PORT}`);
-    });
+    mongoose.connect(DB_URL)
+        .then(_ => {
+            app.listen(PORT, (error) => {
+                if (error) return error;
+                console.log("Connected to MongDB database")
+                console.log(`Server is running on PORT: ${PORT}`);
+            });
+
+        })
+        .catch(error => console.log("MongoDB connection failed", error))
 };
 
 server();
